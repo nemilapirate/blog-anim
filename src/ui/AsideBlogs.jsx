@@ -5,6 +5,7 @@ import { useRevealContents } from "../hooks/useRevealContents";
 const StyledAsideBlogs = styled.div`
   display: flex;
   gap: 1.6rem;
+  cursor: pointer; /* Ajout d'un pointeur pour indiquer que c'est cliquable */
 
   &:not(:last-child) {
     margin-bottom: 3.2rem;
@@ -64,11 +65,17 @@ const BlogPublish = styled.div`
 
 const Details = styled.div``;
 
-export default function AsideBlogs({ blog }) {
+export default function AsideBlogs({ blog, onClick }) {
   const { targetRef, isVisible } = useRevealContents(0.5, true);
 
+  // Fonction pour empêcher la navigation tout en permettant l'action de clic
+  const handleLinkClick = (event) => {
+    event.preventDefault(); // Empêche la redirection de la page
+    onClick(); // Appelle la fonction de clic pour changer l'article principal
+  };
+
   return (
-    <StyledAsideBlogs ref={targetRef} visible={isVisible}>
+    <StyledAsideBlogs ref={targetRef} visible={isVisible} onClick={onClick}>
       <ImageWrapper>
         <img src={blog.img} alt="" />
       </ImageWrapper>
@@ -77,12 +84,12 @@ export default function AsideBlogs({ blog }) {
           {blog.categories.map((cat) => (
             <li key={cat}>
               <span>#</span>
-              <a href="/">{cat}</a>
+              <a href="/" onClick={handleLinkClick}>{cat}</a>
             </li>
           ))}
         </BlogCategories>
         <BlogTitle>
-          <a href="/">{blog.title}</a>
+          <a href="/" onClick={handleLinkClick}>{blog.title}</a>
         </BlogTitle>
         <BlogPublish>
           <p>{blog.publish.author}</p>
